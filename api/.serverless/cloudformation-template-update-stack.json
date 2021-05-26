@@ -77,83 +77,6 @@
         "LogGroupName": "/aws/lambda/api-dev-register"
       }
     },
-    "IamRoleLambdaExecution": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "lambda.amazonaws.com"
-                ]
-              },
-              "Action": [
-                "sts:AssumeRole"
-              ]
-            }
-          ]
-        },
-        "Policies": [
-          {
-            "PolicyName": {
-              "Fn::Join": [
-                "-",
-                [
-                  "api",
-                  "dev",
-                  "lambda"
-                ]
-              ]
-            },
-            "PolicyDocument": {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:CreateLogStream",
-                    "logs:CreateLogGroup"
-                  ],
-                  "Resource": [
-                    {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/api-dev*:*"
-                    }
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:PutLogEvents"
-                  ],
-                  "Resource": [
-                    {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/api-dev*:*:*"
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        ],
-        "Path": "/",
-        "RoleName": {
-          "Fn::Join": [
-            "-",
-            [
-              "api",
-              "dev",
-              {
-                "Ref": "AWS::Region"
-              },
-              "lambdaRole"
-            ]
-          ]
-        }
-      }
-    },
     "RegisterLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -161,7 +84,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/api/dev/1622049552794-2021-05-26T17:19:12.794Z/api.zip"
+          "S3Key": "serverless/api/dev/1622064419968-2021-05-26T21:26:59.968Z/api.zip"
         },
         "Handler": "register/handler.register",
         "Runtime": "nodejs12.x",
@@ -170,28 +93,24 @@
         "Timeout": 6,
         "Environment": {
           "Variables": {
-            "DYNAMODB_USERS": "dev-users"
+            "DYNAMODB_USERS": "dev-users",
+            "SNS_USERS_NOTIFICATIONS_TOPIC": "arn:aws:sns:us-east-1:540839779567:dev-users-register-notifications"
           }
         },
-        "Role": {
-          "Fn::GetAtt": [
-            "IamRoleLambdaExecution",
-            "Arn"
-          ]
-        }
+        "Role": "arn:aws:iam::540839779567:role/dev-users-register-iam-role"
       },
       "DependsOn": [
         "RegisterLogGroup"
       ]
     },
-    "RegisterLambdaVersionYMelyesbtEKH0PMDmuCeRNRk33LFxUyfE4zE1MTIo": {
+    "RegisterLambdaVersionDc8pPr8sgPU4Pv0TrYAW4HSrc2VHvZtFDLwiALioc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "RegisterLambdaFunction"
         },
-        "CodeSha256": "3zovLnaXp6dv1UkbNyzRtSNsymvlLwAwwqxYGj6/7zQ="
+        "CodeSha256": "c8L3CnHdnSq33/MvJ1+cUx9L32ne51jh4Fl4Mbr96m4="
       }
     },
     "ApiGatewayRestApi": {
@@ -264,7 +183,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1622049551505": {
+    "ApiGatewayDeployment1622064417600": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -326,7 +245,7 @@
     "RegisterLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "RegisterLambdaVersionYMelyesbtEKH0PMDmuCeRNRk33LFxUyfE4zE1MTIo"
+        "Ref": "RegisterLambdaVersionDc8pPr8sgPU4Pv0TrYAW4HSrc2VHvZtFDLwiALioc"
       },
       "Export": {
         "Name": "sls-api-dev-RegisterLambdaFunctionQualifiedArn"

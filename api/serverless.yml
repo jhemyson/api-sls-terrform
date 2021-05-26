@@ -12,11 +12,14 @@ provider:
 
 functions:
   register:
+    role: ${ssm:${self:custom.stage}-users-register-iam-role}
     handler: register/handler.register
     events:
       - http:
           path: users
           method: post
+    environment:
+      SNS_USERS_NOTIFICATIONS_TOPIC: ${ssm:${self:custom.stage}-users-register-notifications-topic}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
